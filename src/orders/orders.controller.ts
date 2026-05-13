@@ -8,27 +8,27 @@ import { OrdersService } from './orders.service';
 export class OrdersController {
 	constructor(private readonly ordersService: OrdersService) {}
 
-	@MessagePattern('createOrder')
+	@MessagePattern({ cmd: 'create_order' })
 	create(@Payload() createOrderDto: CreateOrderDto) {
 		return this.ordersService.create(createOrderDto);
 	}
 
-	@MessagePattern('findAllOrders')
+	@MessagePattern({ cmd: 'get_orders' })
 	findAll() {
 		return this.ordersService.findAll();
 	}
 
-	@MessagePattern('findOneOrder')
+	@MessagePattern({ cmd: 'get_order' })
 	findOne(@Payload() id: number) {
 		return this.ordersService.findOne(id);
 	}
 
-	@MessagePattern('updateOrder')
+	@MessagePattern({ cmd: 'update_order' })
 	update(@Payload() updateOrderDto: UpdateOrderDto) {
 		return this.ordersService.update(updateOrderDto.id, updateOrderDto);
 	}
 
-	@MessagePattern('removeOrder')
+	@MessagePattern({ cmd: 'delete_order' })
 	remove(@Payload() id: number) {
 		return this.ordersService.remove(id);
 	}
