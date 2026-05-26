@@ -6,7 +6,12 @@
 		"useIgnoreFile": true
 	},
 	"files": {
-		"includes": ["**", "!!**/dist"]
+		"includes": [
+			"**",
+			"!!**/dist",
+			"!!generated",
+			"!!postgres"
+		]
 	},
 	"formatter": {
 		"enabled": true,
