@@ -34,6 +34,8 @@ export class OrdersService {
 				itemsPerPage: limit,
 				hasPreviousPage: page > 1,
 				hasNextPage: page < lastPage,
+				nextPage: page < lastPage ? page + 1 : null,
+				previousPage: page > 1 ? page - 1 : null,
 			},
 
 		};
