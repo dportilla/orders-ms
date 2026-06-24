@@ -1,8 +1,10 @@
 import { HttpStatus, Injectable } from '@nestjs/common';
 import { RpcException } from '@nestjs/microservices';
-import { PrismaService } from '@/common/prisma/prisma.service';
-import { CreateOrderDto } from './dto/create-order.dto';
 import { PaginationDto } from '@/common/dto/pagination.dto';
+import { PrismaService } from '@/common/prisma/prisma.service';
+import { ChangeOrderStatusDto } from '@/orders/dto/change-order.dto';
+import { OrderStatusList } from '@/orders/enum/order.enum';
+import { CreateOrderDto } from './dto/create-order.dto';
 
 @Injectable()
 export class OrdersService {
@@ -37,7 +39,6 @@ export class OrdersService {
 				nextPage: page < lastPage ? page + 1 : null,
 				previousPage: page > 1 ? page - 1 : null,
 			},
-
 		};
 	}
 
@@ -55,5 +56,21 @@ export class OrdersService {
 		}
 
 		return order;
+	}
+
+	async changeOrderStatus(changeOrderStatusDto: ChangeOrderStatusDto) {
+		const { id, status } = changeOrderStatusDto;
+		if (!(OrderStatusList as string[]).includes(status)) {
+			throw new RpcException({
+				status: HttpStatus.BAD_REQUEST,
+				message: `Status must be one of: ${OrderStatusList.join(', ')}`,
+			});
+		}
+		await this.findOne(id);
+
+		return this.prisma.order.update({
+			where: { id },
+			data: { orderStatus: status },
+		});
 	}
 }
