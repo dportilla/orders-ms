@@ -35,19 +35,13 @@ export class OrdersService {
 			});
 		}
 
-		const foundIds = products.map((p) => p.id);
-		const notFoundIds = productsIds.filter((id) => !foundIds.includes(id));
-
-		if (notFoundIds.length > 0) {
-			throw new RpcException({
-				status: HttpStatus.NOT_FOUND,
-				message: `Products with IDs ${notFoundIds.join(', ')} not found`,
-			});
-		}
+		const productsMap = new Map(
+			products.map((product) => [product.id, product]),
+		);
 
 		const totalAmount = createOrderDto.items.reduce((total, item) => {
 			// biome-ignore lint/style/noNonNullAssertion: Non-null assertion is safe here because we have already validated that all product IDs exist
-			const product = products.find((p) => p.id === item.productId)!;
+			const product = productsMap.get(item.productId)!;
 			return total + item.quantity * product.price;
 		}, 0);
 
@@ -66,7 +60,7 @@ export class OrdersService {
 							productId: item.productId,
 							quantity: item.quantity,
 							// biome-ignore lint/style/noNonNullAssertion: Non-null assertion is safe here because we have already validated that all product IDs exist
-							price: products.find((p) => p.id === item.productId)!.price,
+							price: productsMap.get(item.productId)!.price,
 						})),
 					},
 				},
