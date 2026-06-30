@@ -107,6 +107,15 @@ export class OrdersService {
 	async findOne(id: string) {
 		const order = await this.prisma.order.findUnique({
 			where: { id },
+			include: {
+				orderItems: {
+					select: {
+						productId: true,
+						quantity: true,
+						price: true,
+					},
+				},
+			},
 		});
 
 		if (!order) {
@@ -117,7 +126,21 @@ export class OrdersService {
 			});
 		}
 
-		return order;
+		const productIds = order.orderItems.map((item) => item.productId);
+		const products = await firstValueFrom(
+			this.productsClient.send({ cmd: 'validate_product_ids' }, productIds),
+		);
+
+		// product detail with name
+		const orderWithProductDetails = {
+			...order,
+			orderItems: order.orderItems.map((item) => ({
+				...item,
+				name: products.find((product) => product.id === item.productId)?.name,
+			})),
+		};
+
+		return orderWithProductDetails;
 	}
 
 	async changeOrderStatus(changeOrderStatusDto: ChangeOrderStatusDto) {
