@@ -3,7 +3,7 @@ import { ClientProxy, RpcException } from '@nestjs/microservices';
 import { firstValueFrom } from 'rxjs';
 import { PaginationDto } from '@/common/dto/pagination.dto';
 import { PrismaService } from '@/common/prisma/prisma.service';
-import { PRODUCT_SERVICE } from '@/config/product.services';
+import { NATS_SERVICE } from '@/config/system.services';
 import { ChangeOrderStatusDto } from '@/orders/dto/change-order.dto';
 import { OrderStatusList } from '@/orders/enum/order.enum';
 import { CreateOrderDto } from './dto/create-order.dto';
@@ -12,7 +12,7 @@ import { CreateOrderDto } from './dto/create-order.dto';
 export class OrdersService {
 	constructor(
 		private prisma: PrismaService,
-		@Inject(PRODUCT_SERVICE) private readonly productsClient: ClientProxy,
+		@Inject(NATS_SERVICE) private readonly productsClient: ClientProxy,
 	) {}
 
 	async create(createOrderDto: CreateOrderDto) {

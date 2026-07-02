@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ClientsModule, Transport } from '@nestjs/microservices';
 import { PrismaModule } from '@/common/prisma/prisma.module';
-import { PRODUCT_SERVICE } from '@/config/product.services';
+import { NATS_SERVICE } from '@/config/system.services';
 import { OrdersController } from './orders.controller';
 import { OrdersService } from './orders.service';
 
@@ -11,13 +11,12 @@ import { OrdersService } from './orders.service';
 		PrismaModule,
 		ClientsModule.registerAsync([
 			{
-				name: PRODUCT_SERVICE,
+				name: NATS_SERVICE,
 				inject: [ConfigService],
 				useFactory: (configService: ConfigService) => ({
-					transport: Transport.TCP,
+					transport: Transport.NATS,
 					options: {
-						host: configService.getOrThrow('products.host'),
-						port: configService.getOrThrow('products.port'),
+						servers: configService.getOrThrow('nats.servers'),
 					},
 				}),
 			},

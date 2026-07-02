@@ -8,6 +8,9 @@ export const envValidationSchema = Joi.object({
 	DATABASE_URL: Joi.string().required(),
 
 	// Products Service
-	PRODUCTS_SERVICE_HOST: Joi.string().required(),
-	PRODUCTS_SERVICE_PORT: Joi.number().required(),
+	// PRODUCTS_SERVICE_HOST: Joi.string().required(),
+	// PRODUCTS_SERVICE_PORT: Joi.number().required(),
+
+	// NATS
+	NATS_SERVERS: Joi.string().required(),
 }).unknown(true);

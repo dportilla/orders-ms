@@ -1,5 +1,5 @@
 import appConfig from '@/config/app.config';
 import dbConfig from '@/config/db.config';
-import productsConfig from '@/config/products.config';
+import natsServer from '@/config/nats.server';
 
-export const systemConfig = [appConfig, dbConfig, productsConfig];
+export const systemConfig = [appConfig, dbConfig, natsServer];
